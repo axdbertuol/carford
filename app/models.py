@@ -1,7 +1,9 @@
 from typing import List
-from . import db
-from sqlalchemy.orm import validates, mapped_column, Mapped
+
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import Mapped, mapped_column, validates
+
+from . import db
 
 
 class Owner(db.Model):
