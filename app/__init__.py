@@ -26,7 +26,9 @@ def create_app(start_db: bool = True):
     jwt.init_app(app)
 
     from app.auth import auth as auth_blueprint
+    from app.routes import main as main_blueprint
 
     app.register_blueprint(auth_blueprint, url_prefix="/auth")
+    app.register_blueprint(main_blueprint, url_prefix="/main")
 
     return app
