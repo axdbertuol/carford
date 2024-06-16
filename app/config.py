@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     database_user: str
     database_password: str
     database_dbname: str
+
+    jwt_secret_key: str
+
     model_config = SettingsConfigDict(
         env_file=".env", extra="ignore", populate_by_name=True
     )
@@ -29,3 +32,4 @@ def get_settings():
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     SQLALCHEMY_DATABASE_URI = get_settings().get_sql_alch_dbconnstr()
+    JWT_SECRET_KEY = get_settings().jwt_secret_key
