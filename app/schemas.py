@@ -1,4 +1,6 @@
+import string
 from pydantic import BaseModel, ConfigDict, Field, field_validator
+from flask_pydantic.exceptions import JsonBodyParsingError
 
 
 class OwnerSchema(BaseModel):
@@ -9,13 +11,13 @@ class OwnerSchema(BaseModel):
 
 class CarSchema(BaseModel):
     owner_id: int
-    color: str = Field(regex="^(yellow|blue|gray)$")
-    model: str = Field(regex="^(hatch|sedan|convertible)$")
+    color: str = Field(pattern="^(yellow|blue|gray)$")
+    model: str = Field(pattern="^(hatch|sedan|convertible)$")
 
     @field_validator("owner_id")
     def validate_owner_id(cls, value):
         if value <= 0:
-            raise ValueError("Owner ID must be a positive integer")
+            raise JsonBodyParsingError("Owner ID must be a positive integer")
         return value
 
     model_config = ConfigDict(from_attributes=True)
@@ -27,7 +29,19 @@ class UserSchema(BaseModel):
         min_length=8,
         max_length=50,
         # Contains at least one upper case letter, one lower case letter, one number and one special character
-        regex=r"/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]",
     )
+
+    @field_validator("password")
+    def validate_password(cls, value):
+        if (
+            not any(c.isupper() for c in value)
+            or not any(c.islower() for c in value)
+            or not any(c.isdigit() for c in value)
+            or not any(c in string.punctuation for c in value)
+        ):
+            raise JsonBodyParsingError(
+                "Password must contains at least one upper case letter, one lower case letter, one number and one special character"
+            )
+        return value
 
     model_config = ConfigDict(from_attributes=True)
