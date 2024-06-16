@@ -3,13 +3,19 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from flask_pydantic.exceptions import JsonBodyParsingError
 
 
-class OwnerSchema(BaseModel):
+class OwnerSchemaIn(BaseModel):
     name: str = Field(min_length=1, max_length=100)
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class CarSchema(BaseModel):
+class OwnerSchemaOut(BaseModel):
+    id: int
+    name: str
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CarSchemaIn(BaseModel):
     owner_id: int
     color: str = Field(pattern="^(yellow|blue|gray)$")
     model: str = Field(pattern="^(hatch|sedan|convertible)$")
@@ -19,6 +25,15 @@ class CarSchema(BaseModel):
         if value <= 0:
             raise JsonBodyParsingError("Owner ID must be a positive integer")
         return value
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CarSchemaOut(BaseModel):
+    id: int
+    owner_id: int
+    color: str
+    model: str
 
     model_config = ConfigDict(from_attributes=True)
 
