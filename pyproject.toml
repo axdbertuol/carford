@@ -19,6 +19,9 @@ flask-jwt-extended = "^4.6.0"
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
 
+[tool.poetry.group.dev.dependencies]
+requests = "^2.32.3"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
