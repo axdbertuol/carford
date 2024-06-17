@@ -32,9 +32,9 @@ def add_owner(body: OwnerSchemaIn):
 @validate(on_success_status=200)
 def get_all_owners():
     try:
-        owners = Owner.query.all()
+        owners = db.session.query(Owner).all()
         owners_data = [
-            OwnerSchemaOut.model_validate(owner).model_dump_json() for owner in owners
+            OwnerSchemaOut.model_validate(owner).model_dump() for owner in owners
         ]
         return jsonify({"data": owners_data})
     except ValidationError as e:
@@ -48,7 +48,7 @@ def get_all_owners():
 @validate(on_success_status=200)
 def update_owner(owner_id: int, body: OwnerSchemaIn):
     try:
-        owner = Owner.query.get(owner_id)
+        owner = db.session.query(Owner).get(owner_id)
 
         if not owner:
             return jsonify({"msg": "Owner not found"}), 404
@@ -68,7 +68,7 @@ def update_owner(owner_id: int, body: OwnerSchemaIn):
 @validate()
 def delete_owner(owner_id: int):
     try:
-        owner = Owner.query.get(owner_id)
+        owner = db.session.query(Owner).get(owner_id)
 
         if not owner:
             return jsonify({"msg": "Owner not found"}), 404
@@ -108,8 +108,8 @@ def add_car(body: CarSchemaIn):
 @validate(on_success_status=200)
 def get_all_cars():
     try:
-        cars = Car.query.all()
-        response = [CarSchemaOut.model_validate(car).model_dump_json() for car in cars]
+        cars = db.session.query(Car).all()
+        response = [CarSchemaOut.model_validate(car).model_dump() for car in cars]
         return jsonify({"data": response})
     except ValidationError as e:
         return jsonify({"msg": "Validation error", "errors": e.errors()}), 400
@@ -122,7 +122,7 @@ def get_all_cars():
 @validate(on_success_status=200)
 def update_car(car_id: int, body: CarSchemaIn):
     try:
-        car = Car.query.get(car_id)
+        car = db.session.query(Car).get(car_id)
 
         if not car:
             return jsonify({"msg": "Car not found"}), 404
@@ -144,7 +144,7 @@ def update_car(car_id: int, body: CarSchemaIn):
 @validate()
 def delete_car(car_id: int):
     try:
-        car = Car.query.get(car_id)
+        car = db.session.query(Car).get(car_id)
 
         if not car:
             return jsonify({"msg": "Car not found"}), 404
