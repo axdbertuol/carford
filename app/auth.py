@@ -15,6 +15,16 @@ auth = Blueprint("auth", __name__)
 @auth.route("/register", methods=["POST"])
 @validate()
 def register(body: UserSchema):
+    """
+    Registers a new user.
+
+    This endpoint takes a JSON body containing a username and password,
+    checks if the user already exists, and if not, creates a new user
+    with the provided username and password.
+
+    :param body: The UserSchema containing the username and password.
+    :return: A JSON response with a success or error message.
+    """
     try:
         if db.session.query(User).filter_by(username=body.username).first():
             return jsonify({"msg": "User already exists"}), 409
@@ -35,6 +45,15 @@ def register(body: UserSchema):
 @auth.route("/login", methods=["POST"])
 @validate()
 def login(body: UserSchema):
+    """
+    Authenticates a user and generates a JWT token.
+
+    This endpoint takes a JSON body containing a username and password,
+    validates the credentials, and if valid, returns a JWT token.
+
+    :param body: The UserSchema containing the username and password.
+    :return: A JSON response with the JWT token or an error message.
+    """
     try:
         user: User | None = (
             db.session.query(User).filter_by(username=body.username).first()
