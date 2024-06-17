@@ -1,31 +1,45 @@
 version: '3.8'
 
 services:
-  app:
-    container_name: carford
-    build: .
+  carford-app:
+    container_name: carford-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - platform=linux/amd64
+    depends_on:
+      - carford-db
     env_file:
       - .env
-    depends_on:
-      - db
     # environment:
     #   - FLASK_APP=${FLASK_APP}
     #   - FLASK_ENV=${FLASK_ENV}
+    volumes:
+      - .:/base
     ports:
       - "5000:5000"
-    volumes:
-      - .:/app
-  db:
+    networks:
+      - carford
+
+  carford-db:
     container_name: carford-db
-    image: postgres:16
+    image: postgres:16-alpine
     env_file:
       - .env
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_DBNAME}
+    ports:
+      - ${DATABASE_PORT}:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - carford
 
 volumes:
   postgres_data:
+networks:
+  carford:
+    name: carford-network
