@@ -5,8 +5,8 @@ from pydantic import ValidationError
 from werkzeug.security import check_password_hash
 
 from app import db
-from app.models import User
 
+from .models import User
 from .schemas import UserSchema
 
 auth = Blueprint("auth", __name__)
@@ -16,13 +16,12 @@ auth = Blueprint("auth", __name__)
 @validate()
 def register(body: UserSchema):
     try:
-        if User.query.filter_by(username=body.username).first():
+        if db.session.query(User).filter_by(username=body.username).first():
             return jsonify({"msg": "User already exists"}), 409
 
         new_user = User(username=body.username)
         new_user.set_password(body.password)
 
-        global db
         db.session.add(new_user)
         db.session.commit()
 
