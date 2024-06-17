@@ -49,10 +49,10 @@ class User(db.Model):
     id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
 
     username: Mapped[str] = mapped_column(db.String(30), unique=True, nullable=False)
-    password_hash: Mapped[str] = mapped_column(db.String(128), nullable=False)
+    password_hash: Mapped[str] = mapped_column(db.String(256), nullable=False)
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password, salt_length=10)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
