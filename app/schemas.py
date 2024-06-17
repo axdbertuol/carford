@@ -1,6 +1,8 @@
 import string
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from typing import List
+
 from flask_pydantic.exceptions import JsonBodyParsingError
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class OwnerSchemaIn(BaseModel):
@@ -12,6 +14,7 @@ class OwnerSchemaIn(BaseModel):
 class OwnerSchemaOut(BaseModel):
     id: int
     name: str
+    cars: List["CarSchemaOut"]
     model_config = ConfigDict(from_attributes=True)
 
 
