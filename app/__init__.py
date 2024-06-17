@@ -16,6 +16,7 @@ jwt = JWTManager()
 
 def create_app(start_db: bool = True):
     app = Flask(__name__)
+    global db
     if start_db:
         from app.config import Config
 
@@ -32,3 +33,11 @@ def create_app(start_db: bool = True):
     app.register_blueprint(main_blueprint, url_prefix="/main")
 
     return app
+
+
+app = create_app()
+
+
+@app.route("/")
+def hello_world():
+    return "<p>Hello, World!</p>"
